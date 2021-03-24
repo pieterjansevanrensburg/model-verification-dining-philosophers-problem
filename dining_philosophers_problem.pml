@@ -1,9 +1,11 @@
 /*
 This program seeks to solve the dining philosophers' problem using channels.
 
-It makes use of Djikstra's proposed solution of assigning a global ordering to
-the forks and making sure that the philosophers check whether forks are 
-available with respect to this ordering.
+It is my implementation of Djikstra's proposed solution of assigning a 
+global ordering to the forks and making sure that the philosophers check 
+whether forks are available with respect to this ordering.
+
+For more details see: https://en.wikipedia.org/wiki/Dining_philosophers_problem
 */
 
 /*
@@ -28,13 +30,13 @@ proctype philosopher(chan lower_index_fork; chan higher_index_fork) {
 	bool get;
 	do 	::	true ->
 		/*
-		The philosopher gets the forks according to their global ordering.
+		The philosopher gets the forks according to their global ordering
+		(lower index is checked first).
 		*/
 		lower_index_fork?get;
 		higher_index_fork?get;
 		/*
-		The philosopher releases the forks in reverse order to their 
-		global ordering.
+		The philosopher releases the forks.
 		*/
 		higher_index_fork!get;
 		lower_index_fork!get;	
