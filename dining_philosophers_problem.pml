@@ -36,6 +36,12 @@ proctype philosopher(chan lower_index_fork; chan higher_index_fork) {
 		lower_index_fork?get;
 		higher_index_fork?get;
 		/*
+		Now that the philosopher has both forks adjacent to them, they can
+		eat
+		*/
+		printf("philosopher %d is eating.", _pid)
+		
+		/*
 		The philosopher releases the forks.
 		*/
 		higher_index_fork!get;
