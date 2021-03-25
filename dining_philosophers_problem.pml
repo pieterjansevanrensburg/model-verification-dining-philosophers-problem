@@ -1,9 +1,19 @@
 /*
-This program seeks to solve the dining philosophers' problem using channels.
+This program seeks to solve the generalized dining philosophers' problem 
+using channels.
 
-It is my implementation of Djikstra's proposed solution of assigning a 
-global ordering to the forks and making sure that the philosophers check 
-whether forks are available with respect to this ordering.
+It is my implementation of the Resource Hierarchy Solution proposed by Dijkstra.
+
+This solution involves assigning a partial order to the forks and requires that
+the forks' availability be checked with respect to said ordering i.e. 
+philosophers always checks lower ordered forks first and then higher 
+ordered forks.
+
+The partial ordering is simply each fork's position in the array of 
+asynchronous channels.
+
+Furthermore, each philosopher is treated as a seperate process that runs in
+parallel.
 
 For more details see: https://en.wikipedia.org/wiki/Dining_philosophers_problem
 */
@@ -15,34 +25,36 @@ The total number of philophers (and forks) to consider in this problem.
 
 /*
 An array of asynchronous channels, where each channel represents a fork.
-The indices of the array indicate the forks' assigned global ordering.
+The indices of the array indicate the forks' assigned partial ordering.
 */
 chan forks[number_of_philosophers] = [1] of {bool};
 
 /*
 A process representing a philosopher. It's parameters are as follows:
 	lower_index_fork: A reference to a channel which represents the fork 
-	adjacent to the philosopher that has the lowest array index.
+	adjacent to the philosopher that has the lowest array index
+	(i.e. lower partial ordering).
 	higher_index_fork: A reference to a channel which represents the fork 
-	adjacent to the philosopher that has the highest array index.
+	adjacent to the philosopher that has the highest array index
+	(i.e. higher partial ordering).
 */
 proctype philosopher(chan lower_index_fork; chan higher_index_fork) {
 	bool get;
 	do 	::	true ->
 		/*
-		The philosopher gets the forks according to their global ordering
-		(lower index is checked first).
+		The philosopher tries to get the forks adjacent to them according to 
+		their partial ordering 
+		(lower index is checked first and then higher index).
 		*/
 		lower_index_fork?get;
 		higher_index_fork?get;
 		/*
 		Now that the philosopher has both forks adjacent to them, they can
-		eat
+		eat.
 		*/
 		printf("philosopher %d is eating.", _pid)
-		
 		/*
-		The philosopher releases the forks.
+		The philosopher releases the forks as they are done eating.
 		*/
 		higher_index_fork!get;
 		lower_index_fork!get;	
@@ -51,7 +63,7 @@ proctype philosopher(chan lower_index_fork; chan higher_index_fork) {
 
 init {
 	/*
-	Make all the forks available.
+	Make all the forks available to the philosophers.
 	*/
 	int index = 0;
 	do	::	index < number_of_philosophers -> forks[index]!true; index++;
@@ -65,16 +77,13 @@ init {
 	atomic{
 		do 	:: 	index < number_of_philosophers ->
 				/*
-				Note that we assign a global ordering to the forks 
+				Note that we assign a partial ordering to the forks 
 				based on their positions in the array. 
 				
-				We also make sure that philosophers always try to obtain 
-				the fork adjacent to them which is the lowest in this ordering 
-				first and then try to obtain the next one.
-				
 				This is done by simply assigning forks to philosophers in an
-				ascending order, except for the final philosopher when the
-				first fork in the array is assigned as their lower index fork.
+				ascending order, except for the final philosopher where the
+				first fork in the array is assigned as their lower index fork
+				and the higher index fork is the final fork in the array.
 				*/
 				if	:: 	index == (number_of_philosophers - 1) ->
 						run philosopher(forks[0], forks[index]);
@@ -85,5 +94,4 @@ init {
 			:: else -> break;
 		od
 	}
-	
 }
