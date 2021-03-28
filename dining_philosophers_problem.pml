@@ -3,19 +3,23 @@ This program seeks to solve the generalized dining philosophers' problem
 using channels.
 
 It is my implementation of the Resource Hierarchy Solution proposed by 
-Edsger W. Dijkstra. 
-For more details see: https://en.wikipedia.org/wiki/Dining_philosophers_problem
+Edsger W. Dijkstra (Wikipedia contributors, 2021).
 
 This solution involves assigning a partial order to the forks and requires that
 the forks' availability be checked with respect to said ordering i.e. 
 philosophers always checks lower ordered forks first and then higher 
-ordered forks.
+ordered forks (Wikipedia contributors, 2021).
 
 The partial ordering is simply each fork's position in the array of 
 asynchronous channels.
 
 Furthermore, each philosopher is treated as a seperate process that runs in
-parallel.
+parallel (Wikipedia contributors, 2021).
+
+
+Wikipedia contributors. (2021, March 8). Dining philosophers problem. 
+In Wikipedia, The Free Encyclopedia. Retrieved 18:18, March 28, 2021, 
+from https://en.wikipedia.org/w/index.php?title=Dining_philosophers_problem&oldid=1011067127
 */
 
 /*
