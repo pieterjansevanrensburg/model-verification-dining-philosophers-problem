@@ -69,7 +69,6 @@ init {
 	do	::	index < number_of_philosophers -> forks[index]!true; index++;
 		:: 	else -> break;
 	od
-	
 	/*
 	Start all philosopher processes at the same time.
 	*/
