@@ -2,7 +2,8 @@
 This program seeks to solve the generalized dining philosophers' problem 
 using channels.
 
-It is my implementation of the Resource Hierarchy Solution proposed by Dijkstra.
+It is my implementation of the Resource Hierarchy Solution proposed by 
+Edsger W. Dijkstra.
 
 This solution involves assigning a partial order to the forks and requires that
 the forks' availability be checked with respect to said ordering i.e. 
@@ -32,10 +33,10 @@ chan forks[number_of_philosophers] = [1] of {bool};
 /*
 A process representing a philosopher. It's parameters are as follows:
 	lower_index_fork: A reference to a channel which represents the fork 
-	adjacent to the philosopher that has the lowest array index
+	adjacent to the philosopher that has the lower array index
 	(i.e. lower partial ordering).
 	higher_index_fork: A reference to a channel which represents the fork 
-	adjacent to the philosopher that has the highest array index
+	adjacent to the philosopher that has the higher array index
 	(i.e. higher partial ordering).
 */
 proctype philosopher(chan lower_index_fork; chan higher_index_fork) {
@@ -43,8 +44,8 @@ proctype philosopher(chan lower_index_fork; chan higher_index_fork) {
 	do 	::	true ->
 		/*
 		The philosopher tries to get the forks adjacent to them according to 
-		their partial ordering 
-		(lower index is checked first and then higher index).
+		their partial ordering (lower index is checked first and then 
+		higher index).
 		*/
 		lower_index_fork?get;
 		higher_index_fork?get;
